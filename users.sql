@@ -1,0 +1,67 @@
+CREATE SCHEMA IF NOT EXISTS TRAVEL;
+USE TRAVEL;
+
+DROP TABLE IF EXISTS Address;
+DROP TABLE IF EXISTS CreditCards;
+DROP TABLE IF EXISTS Users;
+
+CREATE TABLE IF NOT EXISTS Users (
+    UserName VARCHAR(50) UNIQUE,
+    Email VARCHAR(100) UNIQUE,
+    Password VARCHAR(255),
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Phone VARCHAR(20),
+    CONSTRAINT pk_Users_UserName PRIMARY KEY (UserName)
+);
+
+LOAD DATA LOCAL INFILE '/Users/a123/Downloads/Users.csv'
+INTO TABLE Users
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY ""
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+
+CREATE TABLE IF NOT EXISTS Address (
+    UserName VARCHAR(255),
+    City VARCHAR(255),
+    Street1 VARCHAR(255),
+    Street2 VARCHAR(255),
+    State VARCHAR(255),
+    ZipCode VARCHAR(20),
+    Country VARCHAR(255),
+    CONSTRAINT pk_Address_UserName PRIMARY KEY (UserName),
+	CONSTRAINT fk_Address_UserName FOREIGN KEY (UserName)
+        REFERENCES Users (UserName)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+LOAD  DATA LOCAL INFILE '/Users/a123/Downloads/Address.csv'
+INTO TABLE Address
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY ""
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+
+
+CREATE TABLE CreditCards (
+	UserName VARCHAR(255),
+    CardNumber BIGINT NOT NULL,
+    Expiration VARCHAR(5),
+    CONSTRAINT pk_CreditCard_CardNumber PRIMARY KEY (CardNumber),
+    CONSTRAINT fk_CreditCard_UserName FOREIGN KEY (UserName)
+        REFERENCES Users (UserName)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+LOAD DATA LOCAL INFILE '/Users/a123/Downloads/CreditCards.csv'
+INTO TABLE CreditCards
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY ""
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
